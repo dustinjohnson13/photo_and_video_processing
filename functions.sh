@@ -18,10 +18,8 @@ importPhotosAndVideos() {
     # Remove spaces from all directories and files
     find "$DIR" -depth -name "* *" -execdir rename 's/ /_/g' "{}" \;
 
-    # Remove metadata files
-    find "$DIR" -type f -name "*.AAE" -exec rm "{}" \;
-
-    for f in `find "$DIR" -type f`
+    # Find all files, ignoring metadata files
+    for f in `find "$DIR" -type f -not -name "*.AAE"`
     do
        unset basedir
        unset date
