@@ -71,5 +71,6 @@ copyPhotosAndVideosToTheCloud() {
     do
        name=`basename "$dir"`
        /usr/sbin/rclone copy "$dir" "remote:$name"
+       /usr/sbin/rclone copy "$dir" "google:family/$name"
     done
 }
