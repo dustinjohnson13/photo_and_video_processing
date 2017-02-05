@@ -19,7 +19,7 @@ importPhotosAndVideos() {
     find "$DIR" -depth -name "* *" -execdir rename 's/ /_/g' "{}" \;
 
     # Find all files, ignoring metadata files
-    for f in `find "$DIR" -type f -not -name "*.AAE"`
+    for f in `find "$DIR" -type f -not -name "*.AAE" -not -name "._*"`
     do
        unset basedir
        unset date
