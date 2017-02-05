@@ -32,7 +32,7 @@ importPhotosAndVideos() {
        # If we don't have a target directory, fail
        [ -z ${basedir+x} ] && echo "Unable to determine file type of $f!" && exit 1
 
-       date=`exiftool $f | grep "Creat" || exiftool $f | grep "Modif"`
+       date=`exiftool $f | grep "Create" || exiftool $f | grep "Modifi"`
 
        # If we don't have a date, fail
        [ -z ${date+x} ] && echo "Unable to determine date of $f!" && exit 1
