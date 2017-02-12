@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+export MISC_VIDEO_DIR="/data/archives/video/misc"
+export PICTURES_DIR="/data/archives/Pictures"
+export PAR2_DIR="/data/archives/video/par2"
+
 verifyRequiredSoftwareExists() {
     # Checks that all required software is installed and present
 
@@ -26,8 +30,8 @@ importPhotosAndVideos() {
        unset subdir
        unset found
 
-       exiftool $f | grep MIME | grep video && basedir="/data/archives/video/misc"
-       [ -z ${basedir+x} ] && exiftool $f | grep MIME | grep image && basedir="/data/archives/Pictures"
+       exiftool $f | grep MIME | grep video && basedir="$MISC_VIDEO_DIR"
+       [ -z ${basedir+x} ] && exiftool $f | grep MIME | grep image && basedir="$PICTURES_DIR"
 
        # If we don't have a target directory, fail
        [ -z ${basedir+x} ] && echo "Unable to determine file type of $f!" && exit 1
@@ -54,18 +58,20 @@ importPhotosAndVideos() {
 createPar2FilesForMiscVideos() {
     # Creates par2 archives for videos
 
-    DIRS="/data/archives/video/misc"
+    DIRS="$MISC_VIDEO_DIR"
 
     for dir in `echo "$DIRS"`
     do
-       find "$dir" -type f -not -name "*.par2" -exec bash -c "ls \"{}.par2\" > /dev/null || par2create \"{}\"" \;
+        (cd "$dir" && find . -type f -not -name "*.par2" -exec bash -c "ls \"$PAR2_DIR/{}.par2\" > /dev/null || par2create \"{}\"" \;)
+        # Copy over the par2 files and delete the originals
+        rsync -rv --remove-source-files --include="*/" --include="*.par2" --exclude="*" --prune-empty-dirs "$dir/" "$PAR2_DIR"
     done
 }
 
 copyPhotosAndVideosToTheCloud() {
     # Copy new files to Amazon Cloud Drive
 
-    DIRS="/data/archives/video/misc /data/archives/Pictures"
+    DIRS="$MISC_VIDEO_DIR $PICTURES_DIR $PAR2_DIR"
 
     for dir in `echo "$DIRS"`
     do
