@@ -10,7 +10,7 @@ verifyRequiredSoftwareExists() {
     which exiftool || (echo "Cannot find exiftool!" && exit 1)
     which par2create || (echo "Cannot find par2create!" && exit 1)
     which rename || (echo "Cannot find the perl rename script!" && exit 1)
-    ls /usr/sbin/rclone || (echo "Cannot find rclone!" && exit 1)
+#    ls /usr/sbin/rclone || (echo "Cannot find rclone!" && exit 1)
 }
 
 importPhotosAndVideos() {
