@@ -1,9 +1,9 @@
 #!groovy
 
+import groovy.json.JsonOutput
+
 stage('Run') {
     node {
-
-        def build = "${env.JOB_NAME} - #${env.BUILD_NUMBER}".toString()
 
         currentBuild.result = "SUCCESS"
 
@@ -18,7 +18,14 @@ stage('Run') {
         } catch (err) {
             currentBuild.result = "FAILURE"
 
-            emailext body: "${env.JOB_NAME} failed! See ${env.BUILD_URL} for details.", recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: "$build failed!"
+            def build = "${env.JOB_NAME} - #${env.BUILD_NUMBER}".toString()
+            def notifierEndpoint = "${env.NOTIFIER_ENDPOINT}".toString()
+            def emailAddress = "${env.EMAIL}".toString()
+
+            def email = [to: emailAddress, from: emailAddress, subject: "$build failed!", body: "${env.JOB_NAME} failed! See ${env.BUILD_URL} for details."]
+            def notify = [email: email]
+
+            sh "curl -X 'POST' $notifierEndpoint -H 'Content-Type: application/json' -d '${JsonOutput.toJson(notify)}'"
 
             throw err
         }
