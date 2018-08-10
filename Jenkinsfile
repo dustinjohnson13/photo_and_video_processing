@@ -22,10 +22,8 @@ stage('Run') {
             def emailAddress = "${env.EMAIL}".toString()
 
             def email = [to: emailAddress, from: emailAddress, subject: "$build failed!", body: "${env.JOB_NAME} failed! See ${env.BUILD_URL} for details."]
-            def notify = [email: email]
 
-            def cmd = env.NOTIFY_COMMAND + " -d '${JsonOutput.toJson(notify)}'"
-            sh cmd
+            emailext body: email.body, recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: email.subject, to: "${env.EMAIL}"
 
             throw err
         }
