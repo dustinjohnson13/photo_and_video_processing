@@ -41,7 +41,7 @@ importPhotosAndVideos() {
        # If we don't have a date, fail
        [ -z ${date+x} ] && echo "Unable to determine date of $f!" && exit 1
 
-       subdir=`echo $date | perl -pe 's/.*(\d{4}:\d{2}:\d{2}).*/\1/g' | sed 's|:|/|g'`
+       subdir=`echo $date | perl -pe 's/.*(\d{4}[:-]\d{2}[:-]\d{2}).*/\1/g' | sed 's|[:-]|/|g'`
        found=`echo $subdir | perl -pe 's|\d{4}/\d{2}/\d{2}|found|g'`
 
        # If we didn't find a proper date format, fail
